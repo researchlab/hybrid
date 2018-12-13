@@ -1,6 +1,6 @@
 # hybrid
 
-- hybrid is an api framework of mixture RESTFUL api and RPC api 
+- hybrid is an API framework of mixture RESTFUL API and RPC API 
 
 ## feature 
 - Friendly support RESTFUL API Style
