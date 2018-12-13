@@ -56,7 +56,7 @@ func main() {
 - router support 
 
 ```
-r.Route("/api/objs/:class", func(r chi.Router) {
+r.Route("/api/v1/:class", func(r chi.Router) {
 		r.Get("/", p.Controller.List)
 		r.Post("/", p.Controller.Create)
 		r.Put("/", p.Controller.Update)
@@ -74,43 +74,43 @@ r.Route("/api/objs/:class", func(r chi.Router) {
 
 - HTTP POST  / Create resourcese
 ```
-➜  ~ curl -XPOST -H "Content-Type: application/json" http://127.0.0.1:9999/api/objs/Stu -d'{"name":"mike","address":"shanghai.china.002", "sex":"male"}'
+➜  ~ curl -XPOST -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/Stu -d'{"name":"mike","address":"shanghai.china.002", "sex":"male"}'
 {"ID":1,"CreatedBy":"","CreatedAt":"2018-12-11T16:12:27.756548+08:00","UpdatedBy":"","UpdatedAt":"2018-12-11T16:12:27.756548+08:00","DeletedBy":"","DeletedAt":null,"Name":"mike","Address":"shanghai.china.002","Sex":"male"}
 ```
 
 - HTTP PUT / Update resourcese
 ```
-➜  ~ curl -XPUT -H "Content-Type: application/json" http://127.0.0.1:9999/api/objs/Stu -d'{"ID":1,"CreatedBy":"","CreatedAt":"2018-12-11T16:12:27.756548+08:00","UpdatedBy":"","UpdatedAt":"2018-12-11T16:12:27.756548+08:00","DeletedBy":"","DeletedAt":null,"Name":"mike.lee","Address":"shanghai.china.002","Sex":"male"}'
+➜  ~ curl -XPUT -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/Stu -d'{"ID":1,"CreatedBy":"","CreatedAt":"2018-12-11T16:12:27.756548+08:00","UpdatedBy":"","UpdatedAt":"2018-12-11T16:12:27.756548+08:00","DeletedBy":"","DeletedAt":null,"Name":"mike.lee","Address":"shanghai.china.002","Sex":"male"}'
 ```
 
 - HTTP GET / Get One 
 ```
-➜  ~ curl -XGET -H "Content-Type: application/json" http://127.0.0.1:9999/api/objs/Stu/1
+➜  ~ curl -XGET -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/Stu/1
 {"ID":1,"CreatedBy":"","CreatedAt":"2018-12-11T16:12:28+08:00","UpdatedBy":"","UpdatedAt":"2018-12-11T16:15:18+08:00","DeletedBy":"","DeletedAt":null,"Name":"mike.lee","Address":"shanghai.china.002","Sex":"male"}
 ```
 
 - HTTP GET / Get All
 ```
-➜  ~ curl -XGET -H "Content-Type: application/json" http://127.0.0.1:9999/api/objs/Stu
+➜  ~ curl -XGET -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/Stu
 {"data":[{"ID":1,"CreatedBy":"","CreatedAt":"2018-12-11T16:12:28+08:00","UpdatedBy":"","UpdatedAt":"2018-12-11T16:15:18+08:00","DeletedBy":"","DeletedAt":null,"Name":"mike.lee","Address":"shanghai.china.002","Sex":"male"},{"ID":2,"CreatedBy":"","CreatedAt":"2018-12-11T16:16:17+08:00","UpdatedBy":"","UpdatedAt":"2018-12-11T16:16:17+08:00","DeletedBy":"","DeletedAt":null,"Name":"alex","Address":"shanghai.china.002","Sex":"female"}],"page":0,"pageCount":1,"pageSize":10}
 ```
 
 - HTTP DELETE / DELETE resourcese
 ```
-➜  ~ curl -XDELETE -H "Content-Type: application/json" http://127.0.0.1:9999/api/objs/Stu/2
+➜  ~ curl -XDELETE -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/Stu/2
 ```
 
 ### RPC API Style Support 
 
 - request StuService/SayHi Method 
 ```
-➜  ~ curl -XPOST -H "Content-Type: application/json" http://127.0.0.1:9999/api/objs/StuService/SayHi -d'["mike"]'
+➜  ~ curl -XPOST -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/StuService/SayHi -d'["mike"]'
 ["Hi, Mr.mike.\n",null]
 
-➜  ~ curl -XPOST -H "Content-Type: application/json" http://127.0.0.1:9999/api/objs/StuService/SayHi -d'["alex"]'
+➜  ~ curl -XPOST -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/StuService/SayHi -d'["alex"]'
 ["Hi, Mrs.alex.\n",null]
 
-➜  ~ curl -XPOST -H "Content-Type: application/json" http://127.0.0.1:9999/api/objs/StuService/SayHi -d'["mike"]'
+➜  ~ curl -XPOST -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/StuService/SayHi -d'["mike"]'
 ["no one named mike found.",null]
 ```
 

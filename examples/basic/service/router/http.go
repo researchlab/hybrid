@@ -22,7 +22,7 @@ func (p *HttpService) Init() error {
 	}()
 	r := chi.NewRouter()
 
-	r.Route("/api/objs/:class", func(r chi.Router) {
+	r.Route("/api/v1/:class", func(r chi.Router) {
 		r.Get("/", p.Controller.List)
 		r.Post("/", p.Controller.Create)
 		r.Put("/", p.Controller.Update)
