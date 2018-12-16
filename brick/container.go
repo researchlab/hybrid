@@ -185,7 +185,7 @@ func (p *Container) inject(r *ObjectRef) {
 			}
 
 			fv := v.Field(i)
-			fmt.Printf("set %v.%s\n", t, f.Name)
+			//			fmt.Printf("set %v.%s\n", t, f.Name)
 			fv.Set(reflect.ValueOf(injectR.Target()))
 		}
 	}
