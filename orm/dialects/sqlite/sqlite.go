@@ -25,7 +25,7 @@ func (p *SQLite3Service) Init() error {
 	p.DeleteCallback.Register(p)
 	p.UpdateCallback.Register(p)
 
-	filename := p.Config.GetMapString("db", "url", "../data/nerv.db")
+	filename := p.Config.GetMapString("db", "url", "../data/storage.db")
 	dir := filepath.Dir(filename)
 	if _, err := os.Stat(dir); err != nil {
 		if err := os.MkdirAll(dir, os.ModeDir|os.ModePerm); err != nil {
