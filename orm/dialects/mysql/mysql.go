@@ -24,7 +24,6 @@ func (p *MySQLService) Init() error {
 	//fmt.Println("Init db")
 
 	passwd := p.Config.GetMapString("db", "password", "root")
-	fmt.Println("passwd:", passwd)
 	p.CreateCallback.Register(p)
 	p.DeleteCallback.Register(p)
 	p.UpdateCallback.Register(p)
