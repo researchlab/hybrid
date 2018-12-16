@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"reflect"
 	"runtime/debug"
@@ -426,9 +425,9 @@ func (p *RestController) InvokeObj(w http.ResponseWriter, req *http.Request) {
 }
 
 func (p *RestController) SetContainer(c *brick.Container) {
-	log.Printf("SetContainer:%+v\n", c)
+	//log.Printf("SetContainer:%+v\n", c)
 	p.container = c
-	log.Printf("SetContainer:%+v\n", p.container)
+	//log.Printf("SetContainer:%+v\n", p.container)
 }
 
 func (p *RestController) raise(event string, data interface{}) {
