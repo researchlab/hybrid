@@ -95,6 +95,12 @@ r.Route("/api/v1/:class", func(r chi.Router) {
 {"data":[{"ID":1,"CreatedBy":"","CreatedAt":"2018-12-11T16:12:28+08:00","UpdatedBy":"","UpdatedAt":"2018-12-11T16:15:18+08:00","DeletedBy":"","DeletedAt":null,"Name":"mike.lee","Address":"shanghai.china.002","Sex":"male"},{"ID":2,"CreatedBy":"","CreatedAt":"2018-12-11T16:16:17+08:00","UpdatedBy":"","UpdatedAt":"2018-12-11T16:16:17+08:00","DeletedBy":"","DeletedAt":null,"Name":"alex","Address":"shanghai.china.002","Sex":"female"}],"page":0,"pageCount":1,"pageSize":10}
 ```
 
+- HTTP GET / Get With Where 
+```
+➜  ~ curl -XGET -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/Stu\?where\=ID\=\?%20and%20Name\=\?\&values\=3,alex
+{"data":[{"ID":3,"CreatedBy":"","CreatedAt":"2018-12-11T16:17:52+08:00","UpdatedBy":"","UpdatedAt":"2018-12-11T16:17:52+08:00","DeletedBy":"","DeletedAt":null,"Name":"alex","Address":"shanghai.china.002","Sex":"female"}],"page":0,"pageCount":1,"pageSize":10}
+```
+
 - HTTP DELETE / DELETE resourcese
 ```
 ➜  ~ curl -XDELETE -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/Stu/2
