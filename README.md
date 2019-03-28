@@ -6,11 +6,6 @@
 - Friendly support RESTFUL API Style
 - Flexible support RPC API Style
 
-## dependencies
-
-```
-```
-
 ## Example 
 
 - register modules to the global container [stu](https://github.com/researchlab/hybrid/tree/master/examples/basic)
