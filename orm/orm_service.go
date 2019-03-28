@@ -1,7 +1,6 @@
 package orm
 
 import (
-	"context"
 	"fmt"
 	"strings"
 
@@ -101,14 +100,6 @@ func (p *OrmService) List(class string, selectFields []string, where string, whe
 	return map[string]interface{}{"data": data, "page": page, "pageSize": limit, "pageCount": pageCount}, nil
 }
 
-func (p *OrmService) CreateCtx(ctx context.Context, class string, data interface{}) error {
-	if err := p.DB.GetDB().CreateCtx(ctx, data).Error; err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (p *OrmService) Create(class string, data interface{}) error {
 	if err := p.DB.GetDB().Create(data).Error; err != nil {
 		return err
@@ -119,30 +110,6 @@ func (p *OrmService) Create(class string, data interface{}) error {
 }
 
 type classType string
-
-func (p *OrmService) RemoveCtx(ctx context.Context, className string, id interface{}, soft bool) (interface{}, error) {
-	md := p.ModelRegistry.Get(className)
-	if md == nil {
-		return nil, fmt.Errorf("class %s isn't exists", className)
-	}
-	data := md.New()
-	if err := p.DB.GetDB().First(data, id).Error; err != nil {
-		return nil, err
-	}
-
-	if !soft {
-		if err := p.DB.GetDB().Unscoped().Delete(data).Error; err != nil {
-			return nil, err
-		}
-	} else {
-		if err := p.DB.GetDB().DeleteCtx(ctx, data).Error; err != nil {
-			return nil, err
-		}
-	}
-
-	//p.watcher.NotifyDelete(class(className), id)
-	return data, nil
-}
 
 func (p *OrmService) Remove(className string, id interface{}) (interface{}, error) {
 	md := p.ModelRegistry.Get(className)
@@ -160,14 +127,6 @@ func (p *OrmService) Remove(className string, id interface{}) (interface{}, erro
 
 	//p.watcher.NotifyDelete(class(className), id)
 	return data, nil
-}
-
-func (p *OrmService) UpdateCtx(ctx context.Context, className string, data interface{}) error {
-	if err := p.DB.GetDB().SaveCtx(ctx, data).Error; err != nil {
-		return err
-	}
-	//p.watcher.NotifyUpdate(class(className), data)
-	return nil
 }
 
 func (p *OrmService) Update(className string, data interface{}) error {

@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"database/sql/driver"
 	"fmt"
-	"github.com/jinzhu/gorm"
 	"reflect"
 	"regexp"
 	"runtime"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/jinzhu/gorm"
 )
 
 // NowFunc returns current time, this function is exported in order to be able

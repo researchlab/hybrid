@@ -13,20 +13,12 @@ import (
 // MySQLService
 type MySQLService struct {
 	orm.ModelRegistryImpl
-	orm.CreateCallback
-	orm.DeleteCallback
-	orm.UpdateCallback
 	db     *gorm.DB
 	Config brick.Config `inject:"config"`
 }
 
 func (p *MySQLService) Init() error {
-	//fmt.Println("Init db")
-
 	passwd := p.Config.GetMapString("db", "password", "root")
-	p.CreateCallback.Register(p)
-	p.DeleteCallback.Register(p)
-	p.UpdateCallback.Register(p)
 	url := fmt.Sprintf(
 		"%s:%s@%s",
 		p.Config.GetMapString("db", "user", "root"),
