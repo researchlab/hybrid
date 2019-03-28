@@ -9,22 +9,6 @@
 ## dependencies
 
 ```
-vendor
-├── github.com
-│   ├── go-resty
-│   ├── go-sql-driver
-│   ├── gopherjs
-│   ├── jinzhu
-│   ├── jtolds
-│   ├── mattn
-│   ├── pressly
-│   ├── sirupsen
-│   ├── smartystreets
-│   └── toolkits
-└── golang.org
-    └── x
-        ├── net
-        └── sys
 ```
 
 ## Example 
@@ -75,35 +59,36 @@ r.Route("/api/v1/:class", func(r chi.Router) {
 - HTTP POST  / Create resourcese
 ```
 ➜  ~ curl -XPOST -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/Stu -d'{"name":"mike","address":"shanghai.china.002", "sex":"male"}'
-{"ID":1,"CreatedBy":"","CreatedAt":"2018-12-11T16:12:27.756548+08:00","UpdatedBy":"","UpdatedAt":"2018-12-11T16:12:27.756548+08:00","DeletedBy":"","DeletedAt":null,"Name":"mike","Address":"shanghai.china.002","Sex":"male"}
+{"ID":1,"CreatedAt":"2019-03-28T10:20:06.015921+08:00","UpdatedAt":"2019-03-28T10:20:06.015921+08:00","DeletedAt":null,"Name":"mike","Address":"shanghai.china.002","Sex":"male"} 
 ```
 
 - HTTP PUT / Update resourcese
 ```
-➜  ~ curl -XPUT -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/Stu -d'{"ID":1,"CreatedBy":"","CreatedAt":"2018-12-11T16:12:27.756548+08:00","UpdatedBy":"","UpdatedAt":"2018-12-11T16:12:27.756548+08:00","DeletedBy":"","DeletedAt":null,"Name":"mike.lee","Address":"shanghai.china.002","Sex":"male"}'
+➜  ~ curl -XPUT -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/Stu -d'{"ID":1,"CreatedAt":"2019-03-28T10:20:06+08:00","UpdatedAt":"2019-03-28T10:20:06+08:00","DeletedAt":null,"Name":"mike","Address":"shanghai.china.001","Sex":"male"}'
+{"ID":1,"CreatedAt":"2019-03-28T10:20:06+08:00","UpdatedAt":"2019-03-28T10:35:43.756395+08:00","DeletedAt":null,"Name":"mike","Address":"shanghai.china.001","Sex":"male"}
 ```
 
 - HTTP GET / Get One 
 ```
 ➜  ~ curl -XGET -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/Stu/1
-{"ID":1,"CreatedBy":"","CreatedAt":"2018-12-11T16:12:28+08:00","UpdatedBy":"","UpdatedAt":"2018-12-11T16:15:18+08:00","DeletedBy":"","DeletedAt":null,"Name":"mike.lee","Address":"shanghai.china.002","Sex":"male"}
+{"ID":1,"CreatedAt":"2019-03-28T10:20:06+08:00","UpdatedAt":"2019-03-28T10:35:44+08:00","DeletedAt":null,"Name":"mike","Address":"shanghai.china.001","Sex":"male"}
 ```
 
 - HTTP GET / Get All
 ```
 ➜  ~ curl -XGET -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/Stu
-{"data":[{"ID":1,"CreatedBy":"","CreatedAt":"2018-12-11T16:12:28+08:00","UpdatedBy":"","UpdatedAt":"2018-12-11T16:15:18+08:00","DeletedBy":"","DeletedAt":null,"Name":"mike.lee","Address":"shanghai.china.002","Sex":"male"},{"ID":2,"CreatedBy":"","CreatedAt":"2018-12-11T16:16:17+08:00","UpdatedBy":"","UpdatedAt":"2018-12-11T16:16:17+08:00","DeletedBy":"","DeletedAt":null,"Name":"alex","Address":"shanghai.china.002","Sex":"female"}],"page":0,"pageCount":1,"pageSize":10}
+{"data":[{"ID":1,"CreatedAt":"2019-03-28T10:20:06+08:00","UpdatedAt":"2019-03-28T10:35:44+08:00","DeletedAt":null,"Name":"mike","Address":"shanghai.china.001","Sex":"male"}],"page":0,"pageCount":1,"pageSize":10}
 ```
 
 - HTTP GET / Get With Where 
 ```
-➜  ~ curl -XGET -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/Stu\?where\=ID\=\?%20and%20Name\=\?\&values\=3,alex
-{"data":[{"ID":3,"CreatedBy":"","CreatedAt":"2018-12-11T16:17:52+08:00","UpdatedBy":"","UpdatedAt":"2018-12-11T16:17:52+08:00","DeletedBy":"","DeletedAt":null,"Name":"alex","Address":"shanghai.china.002","Sex":"female"}],"page":0,"pageCount":1,"pageSize":10}
+➜  ~ curl -XGET -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/Stu\?where\=ID\=\?%20and%20Name\=\?\&values\=1,mike\&pageSize\=20
+{"data":[{"ID":1,"CreatedAt":"2019-03-28T10:20:06+08:00","UpdatedAt":"2019-03-28T10:35:44+08:00","DeletedAt":null,"Name":"mike","Address":"shanghai.china.001","Sex":"male"}],"page":0,"pageCount":1,"pageSize":20}
 ```
 
 - HTTP DELETE / DELETE resourcese
 ```
-➜  ~ curl -XDELETE -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/Stu/2
+➜  ~ curl -XDELETE -H "Content-Type: application/json" http://127.0.0.1:9999/api/v1/Stu/1
 ```
 
 ### RPC API Style Support 
