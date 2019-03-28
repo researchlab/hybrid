@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"os"
 	"os/signal"
 	"syscall"
@@ -17,10 +18,12 @@ import (
 )
 
 var (
-	configPath = "./config/config.json"
+	c = flag.String("c", "./config/config.json", "config path")
 )
 
 func main() {
+	flag.Parse()
+	configPath := *c
 	stopSigs := make(chan os.Signal, 1)
 	signal.Notify(stopSigs, syscall.SIGINT, syscall.SIGTERM)
 	container := brick.NewContainer()
