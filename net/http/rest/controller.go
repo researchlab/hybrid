@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,7 +9,6 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/jinzhu/gorm"
 	"github.com/pressly/chi"
 	"github.com/researchlab/hybrid/brick"
 	"github.com/researchlab/hybrid/net/http/rest/render"
@@ -130,10 +128,7 @@ func (p *RestController) get(w http.ResponseWriter, req *http.Request) {
 }
 
 func (p *RestController) Create(w http.ResponseWriter, req *http.Request) {
-	p.CreateCtx(context.TODO(), w, req)
-}
-
-func (p *RestController) CreateCtx(ctx context.Context, w http.ResponseWriter, req *http.Request) {
+	//	p.CreateCtx(context.TODO(), w, req)
 	defer handlePanic(w, req)
 
 	class := chi.URLParam(req, "class")
@@ -151,7 +146,7 @@ func (p *RestController) CreateCtx(ctx context.Context, w http.ResponseWriter, r
 		return
 	}
 
-	if err := p.ormService.CreateCtx(p.contextWithUser(ctx, req), class, data); err != nil {
+	if err := p.ormService.Create(class, data); err != nil {
 		render.Status(req, 500)
 		render.JSON(w, req, err.Error())
 		return
@@ -161,13 +156,10 @@ func (p *RestController) CreateCtx(ctx context.Context, w http.ResponseWriter, r
 	render.JSON(w, req, data)
 
 	p.raise(fmt.Sprintf("%s.Create", class), data)
+
 }
 
 func (p *RestController) Remove(w http.ResponseWriter, req *http.Request) {
-	p.RemoveCtx(context.TODO(), w, req)
-}
-
-func (p *RestController) RemoveCtx(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	defer handlePanic(w, req)
 
 	class := chi.URLParam(req, "class")
@@ -180,7 +172,7 @@ func (p *RestController) RemoveCtx(ctx context.Context, w http.ResponseWriter, r
 		return
 	}
 
-	data, err := p.ormService.RemoveCtx(p.contextWithUser(ctx, req), class, id, false)
+	data, err := p.ormService.Remove(class, id)
 	if err != nil {
 		render.Status(req, 500)
 		render.JSON(w, req, err.Error())
@@ -189,13 +181,10 @@ func (p *RestController) RemoveCtx(ctx context.Context, w http.ResponseWriter, r
 
 	render.Status(req, 200)
 	p.raise(fmt.Sprintf("%v.Delete", class), data)
+
 }
 
 func (p *RestController) Update(w http.ResponseWriter, req *http.Request) {
-	p.UpdateCtx(context.TODO(), w, req)
-}
-
-func (p *RestController) UpdateCtx(ctx context.Context, w http.ResponseWriter, req *http.Request) {
 	defer handlePanic(w, req)
 
 	class := chi.URLParam(req, "class")
@@ -213,7 +202,7 @@ func (p *RestController) UpdateCtx(ctx context.Context, w http.ResponseWriter, r
 		return
 	}
 
-	if err := p.ormService.UpdateCtx(p.contextWithUser(ctx, req), class, data); err != nil {
+	if err := p.ormService.Update(class, data); err != nil {
 		render.Status(req, 500)
 		render.JSON(w, req, err.Error())
 		return
@@ -222,6 +211,7 @@ func (p *RestController) UpdateCtx(ctx context.Context, w http.ResponseWriter, r
 	render.Status(req, 200)
 	render.JSON(w, req, data)
 	p.raise(fmt.Sprintf("%v.Update", class), data)
+
 }
 
 // InvokeServiceFunc call the  func of service
@@ -368,20 +358,6 @@ func (p *RestController) InvokeObj(w http.ResponseWriter, req *http.Request) {
 	id := chi.URLParam(req, "id")
 	methodName := chi.URLParam(req, "method")
 
-	//md := p.ModelRegistry.Get(class)
-	//if md == nil {
-	//	render.Status(req, 404)
-	//	render.JSON(w, req, fmt.Sprintf("class %s isn't exists", class))
-	//	return
-	//}
-	//data := md.New()
-
-	//	if err := p.DB.GetDB().First(data, id).Error; err != nil {
-	//		render.Status(req, 404)
-	//		render.JSON(w, req, err.Error())
-	//		return
-	//	}
-
 	data, err := p.ormService.Get(class, id, "")
 	if err != nil {
 		render.Status(req, 404)
@@ -432,9 +408,4 @@ func (p *RestController) SetContainer(c *brick.Container) {
 
 func (p *RestController) raise(event string, data interface{}) {
 	p.Emmit(event, data)
-}
-
-func (p *RestController) contextWithUser(parent context.Context, req *http.Request) context.Context {
-	curUser := req.Header.Get(user)
-	return context.WithValue(parent, gorm.ContextCurrentUser(), curUser)
 }
