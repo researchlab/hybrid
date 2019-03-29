@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# go code check 
+
+## gofmt
+
+#pkgs="brick orm"
+#for v in $pkgs;do
+#go fmt -l -w -s $v;
+#done
+packages=(brick orm)
+
+for v in ${packages[@]};do
+gofmt -l -w -s $v;
+done
+
+## govet
