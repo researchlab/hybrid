@@ -1,4 +1,4 @@
-# hybrid [![GitHub release](https://img.shields.io/github/release/researchlab/hybrid.svg?style=flat-square)](https://github.com/researchlab/hybrid/releases) [![Go Report Card](https://goreportcard.com/badge/github.com/researchlab/hybrid)](https://goreportcard.com/report/github.com/researchlab/hybrid)[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](http://godoc.org/github.com/researchlab/hybrid) 
+# hybrid [![GitHub release](https://img.shields.io/github/release/researchlab/hybrid.svg?style=flat-square)](https://github.com/researchlab/hybrid/releases) [![Go Report Card](https://goreportcard.com/badge/github.com/researchlab/hybrid)](https://goreportcard.com/report/github.com/researchlab/hybrid) [![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](http://godoc.org/github.com/researchlab/hybrid) 
 
 - hybrid is an API framework of mixture RESTFUL API and RPC API 
 
