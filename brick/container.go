@@ -9,7 +9,7 @@ import (
 // ObjectState  alias type of object state
 type ObjectState uint32
 
-// object states
+// support 3 object states
 const (
 	Empty ObjectState = 0
 	New               = 1
