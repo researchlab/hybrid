@@ -11,10 +11,10 @@ import (
 
 // Page
 type Page struct {
-	Data      json.RawMessage `json:data`
-	Page      int             `json:page`
-	PageCount int             `json:pageCount`
-	PageSize  int             `json:pageSize`
+	Data      json.RawMessage `json:"data"`
+	Page      int             `json:"page"`
+	PageCount int             `json:"pageCount"`
+	PageSize  int             `json:"pageSize"`
 }
 
 //GetData
