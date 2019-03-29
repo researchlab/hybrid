@@ -5,18 +5,19 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/mysql" // import mysql driven
 	"github.com/researchlab/hybrid/brick"
 	"github.com/researchlab/hybrid/orm"
 )
 
-// MySQLService
+// MySQLService ...
 type MySQLService struct {
 	orm.ModelRegistryImpl
 	db     *gorm.DB
 	Config brick.Config `inject:"config"`
 }
 
+// Init setup mysql conn
 func (p *MySQLService) Init() error {
 	passwd := p.Config.GetMapString("db", "password", "root")
 	url := fmt.Sprintf(
@@ -48,14 +49,15 @@ func (p *MySQLService) Init() error {
 	return nil
 }
 
+// Dispose close mysql conn
 func (p *MySQLService) Dispose() error {
 	if p.db != nil {
 		return p.db.Close()
-	} else {
-		return nil
 	}
+	return nil
 }
 
+// GetDB return db conn
 func (p *MySQLService) GetDB() *gorm.DB {
 	return p.db
 }
