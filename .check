@@ -8,11 +8,11 @@
 #for v in $pkgs;do
 #go fmt -l -w -s $v;
 #done
-packages=(brick orm)
+packages=(brick orm examples net)
 
 for v in ${packages[@]};do
 gofmt -l -w -s $v;
-golint $v;
+golint $v/...;
 done
 
 ## govet
