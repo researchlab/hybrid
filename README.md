@@ -103,3 +103,9 @@ r.Route("/api/v1/:class", func(r chi.Router) {
 - RPC API Paybody DESC 
   - support array paybody and must Keep in the same order as the function parameters.
 	- example. func(id uint, name string), must request with POST Protocol AND postBody like [10, "name"].
+
+
+## License
+
+hybrid is under Apache v2 License. See the [LICENSE](https://github.com/henrylee2cn/teleport/raw/v5/LICENSE) file for the full license text
+
