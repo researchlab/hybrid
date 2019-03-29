@@ -5,7 +5,7 @@ import (
 	"github.com/researchlab/hybrid/orm"
 )
 
-//student entity descriptor define
+// StuDesc student entity descriptor define
 func StuDesc() *orm.ModelDescriptor {
 	return &orm.ModelDescriptor{
 		Type: &Stu{},
@@ -18,7 +18,7 @@ func StuDesc() *orm.ModelDescriptor {
 	}
 }
 
-//student entity define
+// Stu student entity define
 type Stu struct {
 	gorm.Model
 	Name    string

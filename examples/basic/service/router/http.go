@@ -10,12 +10,14 @@ import (
 	"github.com/researchlab/hybrid/brick"
 )
 
-type HttpService struct {
-	Controller *rest.RestController `inject:"RestController"`
-	Config     brick.Config         `inject:"config"`
+// HTTPService ...
+type HTTPService struct {
+	Controller *rest.Controller `inject:"RestController"`
+	Config     brick.Config     `inject:"config"`
 }
 
-func (p *HttpService) Init() error {
+// Init init http router
+func (p *HTTPService) Init() error {
 	log.Println("Init Router Http Service ...")
 	defer func() {
 		log.Println("Init Router Http Service Finished.")
