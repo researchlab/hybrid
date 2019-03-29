@@ -2,6 +2,7 @@ include .env
 
 d := $(shell date)
 branch := $(shell git branch | grep \* | cut -d ' ' -f2)
+packages=brick orm examples net
 
 .PHONY: help
 all: help
@@ -11,6 +12,13 @@ help: Makefile
 	@echo
 	@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/ /'
 	@echo
+
+## check: gofmt & golint code
+check:
+	@for v in `echo $(packages)`; do \
+		gofmt -l -w -s $$v; \
+		golint $$v/...; \
+	done
 
 ## pull: Revert & pull code from remote by current branch.
 pull:
