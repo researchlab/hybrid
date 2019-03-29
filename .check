@@ -2,7 +2,7 @@
 
 # go code check 
 
-## gofmt
+## gofmt golint
 
 #pkgs="brick orm"
 #for v in $pkgs;do
@@ -12,6 +12,7 @@ packages=(brick orm)
 
 for v in ${packages[@]};do
 gofmt -l -w -s $v;
+golint $v;
 done
 
 ## govet
