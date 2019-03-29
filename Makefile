@@ -20,7 +20,6 @@ pull:
 ## push: Auto commit & push code to remote by current branch.
 push: version
 	git commit -am "chore: date is $d."
-	echo git push origin ${branch}
 	git push origin ${branch}
 
 ## cover: Run all test code & print cover profile.
