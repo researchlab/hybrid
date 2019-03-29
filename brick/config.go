@@ -41,12 +41,13 @@ func NewJSONConfigService(path string) *JSONConfigService {
 
 // Init load config file.
 func (p *JSONConfigService) Init() error {
-	if props, err := p.load(p.path); err != nil {
+	props, err := p.load(p.path)
+	if err != nil {
 		return err
-	} else {
-		p.props = props
-		return nil
 	}
+	p.props = props
+	return nil
+
 }
 
 // GetString return string value from config
@@ -81,11 +82,11 @@ func (p *JSONConfigService) GetMapString(name string, field string, value ...str
 
 	if len(value) > 0 {
 		return value[0]
-	} else {
-		return ""
 	}
+	return ""
 }
 
+// GetMapBool return bool value for a map from config
 func (p *JSONConfigService) GetMapBool(name string, field string, value ...bool) bool {
 	if r := p.props[name]; r != nil {
 		if v := r.(map[string]interface{})[field]; v != nil {
@@ -95,11 +96,12 @@ func (p *JSONConfigService) GetMapBool(name string, field string, value ...bool)
 
 	if len(value) > 0 {
 		return value[0]
-	} else {
-		return false
 	}
+
+	return false
 }
 
+// GetMapInt return int value for a map from config
 func (p *JSONConfigService) GetMapInt(name string, field string, value ...int) int {
 	if r := p.props[name]; r != nil {
 		if o := r.(map[string]interface{})[field]; o != nil {
@@ -114,18 +116,16 @@ func (p *JSONConfigService) GetMapInt(name string, field string, value ...int) i
 
 	if len(value) > 0 {
 		return value[0]
-	} else {
-		return 0
 	}
+	return 0
 }
 
 // GetMap return map from config
 func (p *JSONConfigService) GetMap(name string) map[string]interface{} {
 	if r := p.props[name]; r != nil {
 		return r.(map[string]interface{})
-	} else {
-		return map[string]interface{}{}
 	}
+	return map[string]interface{}{}
 }
 
 func (p *JSONConfigService) load(path string) (map[string]interface{}, error) {

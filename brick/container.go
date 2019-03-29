@@ -6,9 +6,10 @@ import (
 	"reflect"
 )
 
-// ObjectState
+// ObjectState  alias type of object state
 type ObjectState uint32
 
+// object states
 const (
 	Empty ObjectState = 0
 	New               = 1
@@ -37,14 +38,17 @@ func newObjectRef(objType reflect.Type, name string, factory Factory) *ObjectRef
 	return &ObjectRef{objType: objType, key: key(objType, name), factory: factory, state: Empty}
 }
 
+//Key unique key of object
 func (p *ObjectRef) Key() string {
 	return p.key
 }
 
+//Target return object itself
 func (p *ObjectRef) Target() interface{} {
 	return p.obj
 }
 
+//Type reflect type of object
 func (p *ObjectRef) Type() reflect.Type {
 	return p.objType
 }
@@ -71,6 +75,7 @@ type Container struct {
 	inits []interface{}
 }
 
+// NewContainer new object of container
 func NewContainer() *Container {
 	return &Container{objs: map[string]*ObjectRef{}, inits: []interface{}{}}
 }
@@ -110,11 +115,12 @@ func (p *Container) Build() {
 	}
 }
 
-// Build all objs in the container
+// Dispose dispose all objs in the container
 func (p *Container) Dispose() {
 	p.disposeObjs(len(p.inits))
 }
 
+// GetByName get object by name
 func (p *Container) GetByName(name string) interface{} {
 	key := key(nil, name)
 	ref := p.objs[key]
@@ -122,15 +128,14 @@ func (p *Container) GetByName(name string) interface{} {
 		return nil
 	}
 
-	if ref.state == Init {
-		return ref.Target()
-	} else {
+	if ref.state != Init {
 		panic(fmt.Errorf("uninit obj: %+v,%s", ref.objType, ref.Key()))
 	}
 
 	return ref.Target()
 }
 
+// GetByType get object by reflect type of object
 func (p *Container) GetByType(svcType reflect.Type) interface{} {
 	return p.GetByName(svcType.Name())
 }

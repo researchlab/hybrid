@@ -4,7 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// DBService
+// DBService DB Service interface
 type DBService interface {
 	GetDB() *gorm.DB
 }

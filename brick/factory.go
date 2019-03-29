@@ -6,10 +6,10 @@ type Factory interface {
 	New() interface{}
 }
 
-// New return a new object
+// NewFunc New return a new object
 type NewFunc func() interface{}
 
-// Factory
+// FactoryFunc return a factory func
 func FactoryFunc(f NewFunc) Factory {
 	return &FactoryFuncWrap{f: f}
 }
@@ -19,6 +19,7 @@ type FactoryFuncWrap struct {
 	f NewFunc
 }
 
+// New New return a factory object of func
 func (p *FactoryFuncWrap) New() interface{} {
 	return p.f()
 }

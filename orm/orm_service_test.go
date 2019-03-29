@@ -8,7 +8,7 @@ import (
 	"github.com/researchlab/hybrid/orm/dialects/mysql"
 )
 
-var ormSvc *orm.OrmService
+var ormSvc *orm.Service
 
 func init() {
 	c := brick.NewContainer()
@@ -16,11 +16,11 @@ func init() {
 		return brick.NewJSONConfigService("config/config.json")
 	}))
 
-	c.Add(&orm.OrmService{}, "OrmService", nil)
+	c.Add(&orm.Service{}, "Service", nil)
 	c.Add(&mysql.MySQLService{}, "DB", nil)
 	c.Add(&TestModel{}, "TestEntity", nil)
 	c.Build()
-	ormSvc = c.GetByName("OrmService").(*orm.OrmService)
+	ormSvc = c.GetByName("Service").(*orm.Service)
 }
 
 type TestEntity struct {

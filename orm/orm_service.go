@@ -20,15 +20,19 @@ func (p *InstanceNotFoundError) Error() string {
 	return p.msg
 }
 
-type OrmService struct {
+//Service orm service struct
+type Service struct {
 	DB            DBService     `inject:"DB"`
 	ModelRegistry ModelRegistry `inject:"DB"`
 }
 
-func (p *OrmService) GetDB() *gorm.DB {
+//GetDB return db conn
+func (p *Service) GetDB() *gorm.DB {
 	return p.DB.GetDB()
 }
-func (p *OrmService) Get(class string, id interface{}, ass string) (interface{}, error) {
+
+//Get query db model with where conditions
+func (p *Service) Get(class string, id interface{}, ass string) (interface{}, error) {
 	md := p.ModelRegistry.Get(class)
 	if md == nil {
 		return nil, fmt.Errorf("class %s isn't exists", class)
@@ -47,7 +51,8 @@ func (p *OrmService) Get(class string, id interface{}, ass string) (interface{},
 	return data, nil
 }
 
-func (p *OrmService) List(class string, selectFields []string, where string, whereValues []interface{}, order string, page int, pageSize int) (map[string]interface{}, error) {
+//List  query db model list with where conditions
+func (p *Service) List(class string, selectFields []string, where string, whereValues []interface{}, order string, page int, pageSize int) (map[string]interface{}, error) {
 	md := p.ModelRegistry.Get(class)
 	if md == nil {
 		return nil, fmt.Errorf("class %s isn't exists", class)
@@ -100,7 +105,8 @@ func (p *OrmService) List(class string, selectFields []string, where string, whe
 	return map[string]interface{}{"data": data, "page": page, "pageSize": limit, "pageCount": pageCount}, nil
 }
 
-func (p *OrmService) Create(class string, data interface{}) error {
+//Create create data
+func (p *Service) Create(class string, data interface{}) error {
 	if err := p.DB.GetDB().Create(data).Error; err != nil {
 		return err
 	}
@@ -111,7 +117,8 @@ func (p *OrmService) Create(class string, data interface{}) error {
 
 type classType string
 
-func (p *OrmService) Remove(className string, id interface{}) (interface{}, error) {
+//Remove remove db data
+func (p *Service) Remove(className string, id interface{}) (interface{}, error) {
 	md := p.ModelRegistry.Get(className)
 	if md == nil {
 		return nil, fmt.Errorf("class %s isn't exists", className)
@@ -129,7 +136,8 @@ func (p *OrmService) Remove(className string, id interface{}) (interface{}, erro
 	return data, nil
 }
 
-func (p *OrmService) Update(className string, data interface{}) error {
+//Update update db data
+func (p *Service) Update(className string, data interface{}) error {
 	if err := p.DB.GetDB().Save(data).Error; err != nil {
 		return err
 	}
@@ -137,6 +145,6 @@ func (p *OrmService) Update(className string, data interface{}) error {
 	return nil
 }
 
-// func (p *OrmService) WatchObject(wk int64, timeout int, className string, id interface{}, associations string) (int64, chan *WatchEvent) {
+// func (p *Service) WatchObject(wk int64, timeout int, className string, id interface{}, associations string) (int64, chan *WatchEvent) {
 // 	return p.watcher.Wait(wk, timeout, class(className), id)
 // }

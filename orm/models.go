@@ -1,5 +1,6 @@
 package orm
 
+//ModelDescriptor db model descriptor
 type ModelDescriptor struct {
 	Type     interface{}
 	New      func() interface{}
@@ -13,10 +14,12 @@ type ModelRegistry interface {
 	Models() <-chan *ModelDescriptor
 }
 
+//ModelRegistryImpl model registry impelement struct
 type ModelRegistryImpl struct {
 	models map[string]*ModelDescriptor
 }
 
+//Put registry db model
 func (p *ModelRegistryImpl) Put(name string, model *ModelDescriptor) {
 	if p.models == nil {
 		p.models = map[string]*ModelDescriptor{}
@@ -24,14 +27,15 @@ func (p *ModelRegistryImpl) Put(name string, model *ModelDescriptor) {
 	p.models[name] = model
 }
 
+//Get get db model by model struct name
 func (p *ModelRegistryImpl) Get(name string) *ModelDescriptor {
 	if p.models == nil {
 		return nil
-	} else {
-		return p.models[name]
 	}
+	return p.models[name]
 }
 
+//Models models channels
 func (p *ModelRegistryImpl) Models() <-chan *ModelDescriptor {
 	ch := make(chan *ModelDescriptor)
 	go func() {

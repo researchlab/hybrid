@@ -13,7 +13,7 @@ type ormService struct {
 	watcher       *watcher
 }
 
-func newOrmService(db orm.DBService, modelRegistry orm.ModelRegistry) *ormService {
+func newService(db orm.DBService, modelRegistry orm.ModelRegistry) *ormService {
 	return &ormService{db: db, modelRegistry: modelRegistry, watcher: newWatcher()}
 }
 

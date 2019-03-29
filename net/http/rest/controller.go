@@ -35,7 +35,7 @@ type RestController struct {
 
 func (p *RestController) Init() error {
 	if p.ormService == nil {
-		p.ormService = &orm.OrmService{DB: p.DB, ModelRegistry: p.ModelRegistry} //newormService(p.DB, p.ModelRegistry)
+		p.ormService = &orm.Service{DB: p.DB, ModelRegistry: p.ModelRegistry} //newormService(p.DB, p.ModelRegistry)
 	}
 
 	return nil

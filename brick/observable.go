@@ -28,6 +28,7 @@ func (p *eventHandlerWrap) Handle(event string, data interface{}) {
 	p.f(event, data)
 }
 
+// Observable event observable interface
 type Observable interface {
 	// Register a handler on the event
 	On(event string, handler EventHandler)
@@ -47,12 +48,14 @@ type eventObject struct {
 	data  interface{}
 }
 
+//Trigger events trigger struct
 type Trigger struct {
 	events map[string][]EventHandler
 	ech    chan *eventObject
 	init   uint64
 }
 
+//On Trigger on function
 func (p *Trigger) On(event string, handler EventHandler) {
 	if p.events == nil {
 		p.events = map[string][]EventHandler{}
@@ -65,6 +68,7 @@ func (p *Trigger) On(event string, handler EventHandler) {
 	p.events[event] = hs
 }
 
+//Off Trigger off function
 func (p *Trigger) Off(event string, handler EventHandler) {
 	if p.events == nil {
 		return
@@ -82,6 +86,7 @@ func (p *Trigger) Off(event string, handler EventHandler) {
 	p.events[event] = hs
 }
 
+//Emmit Event trigger emmit
 func (p *Trigger) Emmit(event string, data interface{}) {
 	//fmt.Println("Trigger.Emmit", event)
 	p.runDispatch()
