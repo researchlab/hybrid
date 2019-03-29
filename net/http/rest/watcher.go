@@ -98,27 +98,31 @@ func (p *watchEventChannels) decrementRef() {
 	p.refCount--
 }
 
+// OrmEventType ...
 type OrmEventType int
 
+// support 4 orm event type
 const (
-	orm_read OrmEventType = iota
-	orm_create
-	orm_delete
-	orm_update
+	ormRead OrmEventType = iota
+	ormCreate
+	ormDelete
+	ormUpdate
 )
 
+// OrmEvent ...
 type OrmEvent struct {
 	EventType OrmEventType `json:"eventType"`
 	Class     class        `json:"class"`
 	Data      interface{}  `json:"data"`
-	ID        interface{}  `json:"id"` //the id of object that has been deleted. it's nil if EventType isn't orm_delete
+	ID        interface{}  `json:"id"` //the id of object that has been deleted. it's nil if EventType isn't ormDelete
 }
 
+// NewOrmEvent  return OrmEvent object
 func NewOrmEvent(eventType OrmEventType, className class, data interface{}) *OrmEvent {
-	return &OrmEvent{EventType: orm_read, Class: className, Data: data}
+	return &OrmEvent{EventType: ormRead, Class: className, Data: data}
 }
 
-// WatchEvent
+// WatchEvent ...
 type WatchEvent struct {
 	WaitKey  int64
 	OrmEvent *OrmEvent
@@ -137,21 +141,21 @@ func newWatcher() *watcher {
 func (p *watcher) NotifyCreate(className class, data interface{}) {
 	wec := p.m.find(className)
 	if wec != nil {
-		wec.append(&OrmEvent{EventType: orm_create, Class: className, Data: data})
+		wec.append(&OrmEvent{EventType: ormCreate, Class: className, Data: data})
 	}
 }
 
 func (p *watcher) NotifyUpdate(class class, data interface{}) {
 	wec := p.m.find(class)
 	if wec != nil {
-		wec.append(&OrmEvent{EventType: orm_update, Class: class, Data: data})
+		wec.append(&OrmEvent{EventType: ormUpdate, Class: class, Data: data})
 	}
 }
 
 func (p *watcher) NotifyDelete(class class, id interface{}) {
 	wec := p.m.find(class)
 	if wec != nil {
-		wec.append(&OrmEvent{EventType: orm_delete, Class: class, ID: id})
+		wec.append(&OrmEvent{EventType: ormDelete, Class: class, ID: id})
 	}
 }
 

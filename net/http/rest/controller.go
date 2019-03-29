@@ -24,8 +24,8 @@ func handlePanic(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-// RestController
-type RestController struct {
+// Controller ...
+type Controller struct {
 	brick.Trigger
 	DB            orm.DBService     `inject:"DB"`
 	ModelRegistry orm.ModelRegistry `inject:"DB"`
@@ -33,7 +33,8 @@ type RestController struct {
 	ormService    orm.Repository
 }
 
-func (p *RestController) Init() error {
+// Init ...
+func (p *Controller) Init() error {
 	if p.ormService == nil {
 		p.ormService = &orm.Service{DB: p.DB, ModelRegistry: p.ModelRegistry} //newormService(p.DB, p.ModelRegistry)
 	}
@@ -41,7 +42,8 @@ func (p *RestController) Init() error {
 	return nil
 }
 
-func (p *RestController) List(w http.ResponseWriter, req *http.Request) {
+// List query data list
+func (p *Controller) List(w http.ResponseWriter, req *http.Request) {
 	defer handlePanic(w, req)
 
 	/**
@@ -104,13 +106,13 @@ func (p *RestController) List(w http.ResponseWriter, req *http.Request) {
 	// render.JSON(w, req, map[string]interface{}{"data": data, "page": page, "pageSize": limit, "pageCount": pageCount})
 }
 
-// get one obj. query params: assocations=a,b...
-func (p *RestController) Get(w http.ResponseWriter, req *http.Request) {
+// Get get one obj. query params: assocations=a,b...
+func (p *Controller) Get(w http.ResponseWriter, req *http.Request) {
 	defer handlePanic(w, req)
 	p.get(w, req)
 }
 
-func (p *RestController) get(w http.ResponseWriter, req *http.Request) {
+func (p *Controller) get(w http.ResponseWriter, req *http.Request) {
 	class := chi.URLParam(req, "class")
 	id := chi.URLParam(req, "id")
 	ass := req.URL.Query().Get("associations")
@@ -127,7 +129,8 @@ func (p *RestController) get(w http.ResponseWriter, req *http.Request) {
 
 }
 
-func (p *RestController) Create(w http.ResponseWriter, req *http.Request) {
+// Create resource create func
+func (p *Controller) Create(w http.ResponseWriter, req *http.Request) {
 	//	p.CreateCtx(context.TODO(), w, req)
 	defer handlePanic(w, req)
 
@@ -159,7 +162,8 @@ func (p *RestController) Create(w http.ResponseWriter, req *http.Request) {
 
 }
 
-func (p *RestController) Remove(w http.ResponseWriter, req *http.Request) {
+// Remove resource remove func
+func (p *Controller) Remove(w http.ResponseWriter, req *http.Request) {
 	defer handlePanic(w, req)
 
 	class := chi.URLParam(req, "class")
@@ -184,7 +188,8 @@ func (p *RestController) Remove(w http.ResponseWriter, req *http.Request) {
 
 }
 
-func (p *RestController) Update(w http.ResponseWriter, req *http.Request) {
+// Update  rest api update func
+func (p *Controller) Update(w http.ResponseWriter, req *http.Request) {
 	defer handlePanic(w, req)
 
 	class := chi.URLParam(req, "class")
@@ -211,11 +216,10 @@ func (p *RestController) Update(w http.ResponseWriter, req *http.Request) {
 	render.Status(req, 200)
 	render.JSON(w, req, data)
 	p.raise(fmt.Sprintf("%v.Update", class), data)
-
 }
 
 // InvokeServiceFunc call the  func of service
-func (p *RestController) InvokeServiceFunc() func(w http.ResponseWriter, req *http.Request) {
+func (p *Controller) InvokeServiceFunc() func(w http.ResponseWriter, req *http.Request) {
 	return func(c *brick.Container) func(w http.ResponseWriter, req *http.Request) {
 		return func(w http.ResponseWriter, req *http.Request) {
 			invokeService(c, w, req)
@@ -237,57 +241,57 @@ func invokeService(c *brick.Container, w http.ResponseWriter, req *http.Request)
 	}
 
 	t := reflect.TypeOf(svc)
-	if m, b := t.MethodByName(methodName); b != true {
+	m, b := t.MethodByName(methodName)
+	if b != true {
 		render.Status(req, 404)
 		render.JSON(w, req, fmt.Sprintf("method %s.%s isn't exists.from %v", class, methodName, t))
 		return
-	} else {
-		args := []json.RawMessage{}
-		err := render.Bind(req.Body, &args)
-		if err != nil && err != io.EOF {
-			render.Status(req, 400)
-			render.JSON(w, req, err.Error())
-			return
-		}
-
-		in := []reflect.Value{reflect.ValueOf(svc)}
-		funcType := m.Func.Type()
-		if funcType.NumIn() > 1 {
-			step := 1
-
-			for i, arg := range args {
-				argType := funcType.In(i + step)
-				argValue := reflect.New(argType)
-				if err := json.Unmarshal(arg, argValue.Interface()); err == nil {
-					in = append(in, argValue.Elem())
-				} else {
-					render.Status(req, 500)
-					render.JSON(w, req, err.Error())
-					return
-				}
-			}
-		}
-
-		values := m.Func.Call(in)
-		ret := []interface{}{}
-		httpCode := 200
-		for _, value := range values {
-			rawValue := value.Interface()
-			if e, ok := rawValue.(error); ok {
-				httpCode = 500
-				ret = append(ret, e.Error())
-			} else {
-				ret = append(ret, rawValue)
-			}
-
-		}
-		render.Status(req, httpCode)
-		render.JSON(w, req, ret)
 	}
+	args := []json.RawMessage{}
+	err := render.Bind(req.Body, &args)
+	if err != nil && err != io.EOF {
+		render.Status(req, 400)
+		render.JSON(w, req, err.Error())
+		return
+	}
+
+	in := []reflect.Value{reflect.ValueOf(svc)}
+	funcType := m.Func.Type()
+	if funcType.NumIn() > 1 {
+		step := 1
+
+		for i, arg := range args {
+			argType := funcType.In(i + step)
+			argValue := reflect.New(argType)
+			if err := json.Unmarshal(arg, argValue.Interface()); err == nil {
+				in = append(in, argValue.Elem())
+			} else {
+				render.Status(req, 500)
+				render.JSON(w, req, err.Error())
+				return
+			}
+		}
+	}
+
+	values := m.Func.Call(in)
+	ret := []interface{}{}
+	httpCode := 200
+	for _, value := range values {
+		rawValue := value.Interface()
+		if e, ok := rawValue.(error); ok {
+			httpCode = 500
+			ret = append(ret, e.Error())
+		} else {
+			ret = append(ret, rawValue)
+		}
+
+	}
+	render.Status(req, httpCode)
+	render.JSON(w, req, ret)
 }
 
 // InvokeServiceRawMessageFunc call the  func of service with json.RawMessage
-func (p *RestController) InvokeServiceRawMessageFunc() func(w http.ResponseWriter, req *http.Request) {
+func (p *Controller) InvokeServiceRawMessageFunc() func(w http.ResponseWriter, req *http.Request) {
 	return func(c *brick.Container) func(w http.ResponseWriter, req *http.Request) {
 		return func(w http.ResponseWriter, req *http.Request) {
 			invokeServiceRawMessage(c, w, req)
@@ -309,49 +313,51 @@ func invokeServiceRawMessage(c *brick.Container, w http.ResponseWriter, req *htt
 	}
 
 	t := reflect.TypeOf(svc)
-	if m, b := t.MethodByName(methodName); b != true {
+	m, b := t.MethodByName(methodName)
+	if b != true {
 		render.Status(req, 404)
 		render.JSON(w, req, fmt.Sprintf("method %s.%s isn't exists.from %v", class, methodName, t))
 		return
 
-	} else {
-		arg := json.RawMessage{}
-		if err := render.Bind(req.Body, &arg); err != nil {
-			render.Status(req, 400)
-			render.JSON(w, req, err.Error())
-			return
-		}
-
-		in := []reflect.Value{reflect.ValueOf(svc)}
-		funcType := m.Func.Type()
-		if funcType.NumIn() > 1 {
-			in = append(in, reflect.ValueOf(arg))
-		}
-
-		values := m.Func.Call(in)
-		ret := []interface{}{}
-		httpCode := 200
-		if len(values) != 2 {
-			render.Status(req, httpCode)
-			render.JSON(w, req, fmt.Sprintf("service must return 2 values, (string,error)"))
-			return
-		}
-
-		for _, value := range values {
-			rawValue := value.Interface()
-			if e, ok := rawValue.(error); ok {
-				httpCode = 500
-				ret = append(ret, e.Error())
-			} else {
-				ret = append(ret, rawValue)
-			}
-		}
-		render.Status(req, httpCode)
-		render.JSON(w, req, ret)
 	}
+	arg := json.RawMessage{}
+	if err := render.Bind(req.Body, &arg); err != nil {
+		render.Status(req, 400)
+		render.JSON(w, req, err.Error())
+		return
+	}
+
+	in := []reflect.Value{reflect.ValueOf(svc)}
+	funcType := m.Func.Type()
+	if funcType.NumIn() > 1 {
+		in = append(in, reflect.ValueOf(arg))
+	}
+
+	values := m.Func.Call(in)
+	ret := []interface{}{}
+	httpCode := 200
+	if len(values) != 2 {
+		render.Status(req, httpCode)
+		render.JSON(w, req, fmt.Sprintf("service must return 2 values, (string,error)"))
+		return
+	}
+
+	for _, value := range values {
+		rawValue := value.Interface()
+		if e, ok := rawValue.(error); ok {
+			httpCode = 500
+			ret = append(ret, e.Error())
+		} else {
+			ret = append(ret, rawValue)
+		}
+	}
+	render.Status(req, httpCode)
+	render.JSON(w, req, ret)
+
 }
 
-func (p *RestController) InvokeObj(w http.ResponseWriter, req *http.Request) {
+// InvokeObj  executing RPC API Method
+func (p *Controller) InvokeObj(w http.ResponseWriter, req *http.Request) {
 	defer handlePanic(w, req)
 
 	class := chi.URLParam(req, "class")
@@ -366,46 +372,47 @@ func (p *RestController) InvokeObj(w http.ResponseWriter, req *http.Request) {
 	}
 
 	t := reflect.TypeOf(data)
-	if m, b := t.MethodByName(methodName); b != true {
+	m, b := t.MethodByName(methodName)
+	if b != true {
 		render.Status(req, 404)
 		render.JSON(w, req, fmt.Sprintf("%s/%s/%s isn't exists", class, id, methodName))
 		return
 
-	} else {
-		args := []interface{}{}
-		if err := render.Bind(req.Body, &args); err != nil {
-			render.Status(req, 400)
-			render.JSON(w, req, err.Error())
-			return
-		}
-
-		in := []reflect.Value{reflect.ValueOf(data)}
-		for _, arg := range args {
-			in = append(in, reflect.ValueOf(arg))
-		}
-		values := m.Func.Call(in)
-		ret := []interface{}{}
-		httpCode := 200
-		for _, value := range values {
-			rawValue := value.Interface()
-			if e, ok := rawValue.(error); ok {
-				httpCode = 500
-				ret = append(ret, e.Error())
-			} else {
-				ret = append(ret, rawValue)
-			}
-		}
-		render.Status(req, httpCode)
-		render.JSON(w, req, ret)
 	}
+	args := []interface{}{}
+	if err := render.Bind(req.Body, &args); err != nil {
+		render.Status(req, 400)
+		render.JSON(w, req, err.Error())
+		return
+	}
+
+	in := []reflect.Value{reflect.ValueOf(data)}
+	for _, arg := range args {
+		in = append(in, reflect.ValueOf(arg))
+	}
+	values := m.Func.Call(in)
+	ret := []interface{}{}
+	httpCode := 200
+	for _, value := range values {
+		rawValue := value.Interface()
+		if e, ok := rawValue.(error); ok {
+			httpCode = 500
+			ret = append(ret, e.Error())
+		} else {
+			ret = append(ret, rawValue)
+		}
+	}
+	render.Status(req, httpCode)
+	render.JSON(w, req, ret)
 }
 
-func (p *RestController) SetContainer(c *brick.Container) {
+// SetContainer ...
+func (p *Controller) SetContainer(c *brick.Container) {
 	//log.Printf("SetContainer:%+v\n", c)
 	p.container = c
 	//log.Printf("SetContainer:%+v\n", p.container)
 }
 
-func (p *RestController) raise(event string, data interface{}) {
+func (p *Controller) raise(event string, data interface{}) {
 	p.Emmit(event, data)
 }

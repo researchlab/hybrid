@@ -9,7 +9,7 @@ import (
 	"gopkg.in/resty.v1"
 )
 
-// Page
+// Page  rest response body
 type Page struct {
 	Data      json.RawMessage `json:"data"`
 	Page      int             `json:"page"`
@@ -17,7 +17,7 @@ type Page struct {
 	PageSize  int             `json:"pageSize"`
 }
 
-//GetData
+//GetData return json unmarshal data
 func (p *Page) GetData(data interface{}) error {
 	return json.Unmarshal(p.Data, data)
 }
