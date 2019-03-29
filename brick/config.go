@@ -105,7 +105,7 @@ func (p *JSONConfigService) GetMapInt(name string, field string, value ...int) i
 		if o := r.(map[string]interface{})[field]; o != nil {
 			switch v := o.(type) {
 			case float64:
-				return int(v)			
+				return int(v)
 			default:
 				return o.(int)
 			}
