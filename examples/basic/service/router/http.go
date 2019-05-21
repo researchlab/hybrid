@@ -3,6 +3,7 @@ package router
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/researchlab/hybrid/net/http/rest"
 
@@ -14,6 +15,7 @@ import (
 type HTTPService struct {
 	Controller *rest.Controller `inject:"RestController"`
 	Config     brick.Config     `inject:"config"`
+	server     *http.Server
 }
 
 // Init init http router
@@ -40,9 +42,22 @@ func (p *HTTPService) Init() error {
 		panic("config invalid, server port invalid.")
 	}
 	log.Println("stu service start from port:", port)
+	p.server = &http.Server{
+		Addr:           ":" + port,
+		Handler:        r,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+
 	go func() {
-		log.Fatal(http.ListenAndServe(":"+port, r))
+		log.Fatal(p.server.ListenAndServe())
 	}()
 
 	return nil
+}
+
+// Dispose http server close
+func (p *HttpService) Dispose() error {
+	return p.server.Close()
 }
