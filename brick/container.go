@@ -108,8 +108,10 @@ func (p *Container) Build() {
 	for index, o := range p.inits {
 		if i, ok := o.(Initializer); ok {
 			if err := i.Init(); err != nil {
-				fmt.Printf("init %v err: %s\n", o, err.Error())
+				log.Errorf(fmt.Sprintf("Initialization FAILED %v - %v\n", reflect.TypeOf(o).Elem(), err.Error()))
+				fmt.Println()
 				p.disposeObjs(index)
+				log.Fatal("Service Not Available\n")
 			}
 		}
 	}
@@ -197,11 +199,15 @@ func (p *Container) inject(r *ObjectRef) {
 }
 
 func (p *Container) disposeObjs(count int) {
+	log.Printf("DISPOSE LISTS(%d),\n", (count))
 	for i := count - 1; i >= 0; i-- {
 		if d, ok := p.inits[i].(Disposable); ok {
 			if err := d.Dispose(); err != nil {
-				log.Println(err.Error())
+				log.Printf("%-35v FAILED %-20v\n", reflect.TypeOf(d).Elem(), err)
 			}
+			log.Printf("%-35v SUCCESS\n", reflect.TypeOf(d).Elem())
+		} else {
+			log.Printf("%-35v IGNORE NO DISPOSE\n", reflect.TypeOf(p.inits[i]).Elem())
 		}
 	}
 }
