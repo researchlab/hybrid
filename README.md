@@ -19,10 +19,10 @@ func main() {
 		return brick.NewJSONConfigService(configPath)
 	}))
 	container.Add(&model.Models{}, "Models", nil)
-	container.Add(&mysql.MySQLService{}, "DB", nil)
+	container.Add(&mysql.Service{}, "DB", nil)
 	container.Add(&router.HTTPService{}, "HttpService", nil)
 	container.Add(&rest.Controller{}, "RestController", nil)
-	container.Add(&stu.StuService{}, "StuService", nil)
+	container.Add(&stu.Service{}, "StuService", nil)
 	container.Build()
 	defer container.Dispose()
 	select {
