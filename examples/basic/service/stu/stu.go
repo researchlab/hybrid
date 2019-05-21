@@ -8,14 +8,14 @@ import (
 	"github.com/researchlab/hybrid/orm"
 )
 
-// StuService  student service struct
-type StuService struct {
+// Service  student service struct
+type Service struct {
 	//DB orm.DBService `inject:"DB"`
 	DB orm.DBService `inject:"DB"`
 }
 
 // SayHi sayhi for the given person by name
-func (p *StuService) SayHi(name string) (string, error) {
+func (p *Service) SayHi(name string) (string, error) {
 	one := &model.Stu{}
 	if p.DB.GetDB().Where("name = ?", strings.TrimSpace(name)).Find(one).RecordNotFound() {
 		return fmt.Sprintf("no one named %v found.", name), nil

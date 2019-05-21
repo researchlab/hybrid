@@ -58,6 +58,6 @@ func (p *HTTPService) Init() error {
 }
 
 // Dispose http server close
-func (p *HttpService) Dispose() error {
+func (p *HTTPService) Dispose() error {
 	return p.server.Close()
 }
