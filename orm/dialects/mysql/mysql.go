@@ -10,15 +10,15 @@ import (
 	"github.com/researchlab/hybrid/orm"
 )
 
-// MySQLService ...
-type MySQLService struct {
+// Service mysql service provider
+type Service struct {
 	orm.ModelRegistryImpl
 	db     *gorm.DB
 	Config brick.Config `inject:"config"`
 }
 
-// Init setup mysql conn
-func (p *MySQLService) Init() error {
+// Init mysql service init
+func (p *Service) Init() error {
 	passwd := p.Config.GetMapString("db", "password", "root")
 	url := fmt.Sprintf(
 		"%s:%s@%s",
@@ -50,7 +50,7 @@ func (p *MySQLService) Init() error {
 }
 
 // Dispose close mysql conn
-func (p *MySQLService) Dispose() error {
+func (p *Service) Dispose() error {
 	if p.db != nil {
 		return p.db.Close()
 	}
@@ -58,6 +58,6 @@ func (p *MySQLService) Dispose() error {
 }
 
 // GetDB return db conn
-func (p *MySQLService) GetDB() *gorm.DB {
+func (p *Service) GetDB() *gorm.DB {
 	return p.db
 }
