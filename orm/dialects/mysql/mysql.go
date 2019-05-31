@@ -2,7 +2,6 @@ package mysql
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" // import mysql driven
@@ -31,11 +30,14 @@ func (p *Service) Init() error {
 		return err
 	}
 
-	timeout, err := time.ParseDuration(p.Config.GetMapString("db", "connMaxLifetime", "2h"))
-	if err != nil {
-		timeout = 2 * time.Hour
-	}
-	db.DB().SetConnMaxLifetime(timeout)
+	//timeout, err := time.ParseDuration(p.Config.GetMapString("db", "connMaxLifetime", "2h"))
+	//if err != nil {
+	//	timeout = 2 * time.Hour
+	//}
+	//db.DB().SetConnMaxLifetime(3 * time.Second)
+
+	//fix the bug: [mysql] 2016/10/11 09:17:16 packets.go:33: unexpected EOF
+	db.DB().SetMaxIdleConns(0)
 
 	log := p.Config.GetMapBool("db", "log", false)
 	db.LogMode(log)
